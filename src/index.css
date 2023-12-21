@@ -12,10 +12,13 @@ body {
   margin: 2rem;
 }
 .colm{
-  display: flex;
-  justify-content: center;
+  margin: 1rem auto;
 }
 .movie{
   padding: 2rem;
   background-color: bisque;
+}
+
+.cancelretry{
+  display: none;
 }
