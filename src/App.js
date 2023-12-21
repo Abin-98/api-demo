@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import Movies from "./Movies";
 
@@ -7,7 +7,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [retry, setRetry] = useState(false);
-  async function fetchMovies() {
+  
+  const fetchMovies=useCallback(async()=> {
     setIsLoading(true);
     setError(null);
     try {
@@ -33,12 +34,12 @@ function App() {
       setError(error.message);
       setIsLoading(false);
     }
-  }
+  },[]);
 
   useEffect(() => {
     fetchMovies();
     console.log("first useEffect")
-  }, []);
+  }, [fetchMovies]);
 
   useEffect(() => {
     let id;
