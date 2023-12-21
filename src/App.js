@@ -6,13 +6,14 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [retry, setRetry] = useState(true);
+  const [retry, setRetry] = useState(false);
   async function fetchMovies() {
     setIsLoading(true);
     setError(null);
     try {
       const response = await fetch("https://swapi.dev/api/film/");
       if (!response.ok) {
+        setRetry(true);
         throw new Error("Something went wrong...");
       }
       setRetry(false);
@@ -28,20 +29,29 @@ function App() {
       });
       setMovies(newMovieData);
     } catch (error) {
+      console.log("inside fetchMovies")
       setError(error.message);
-      if (retry) {
-        console.log(retry)
-        setTimeout(() => {
-          fetchMovies();
-        }, 7000);
-      }
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
     fetchMovies();
+    console.log("first useEffect")
   }, []);
+
+  useEffect(() => {
+    let id;
+    if (retry) {
+      console.log("inside useEffect 2, retry status: "+retry);
+      id = setTimeout(() => {
+        fetchMovies();
+      }, 2000);
+    }
+    return () => {
+      clearTimeout(id);
+    };
+  });
 
   const onCancelRetry = () => {
     setRetry(false);
