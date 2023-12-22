@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import Movies from "./Movies";
+import FormInput from "./FormInput";
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [retry, setRetry] = useState(false);
-  
-  const fetchMovies=useCallback(async()=> {
+
+  const fetchMovies = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/film/");
+      const response = await fetch("https://swapi.dev/api/films/");
       if (!response.ok) {
         setRetry(true);
         throw new Error("Something went wrong...");
@@ -30,21 +31,21 @@ function App() {
       });
       setMovies(newMovieData);
     } catch (error) {
-      console.log("inside fetchMovies")
+      console.log("inside fetchMovies");
       setError(error.message);
       setIsLoading(false);
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchMovies();
-    console.log("first useEffect")
+    console.log("first useEffect");
   }, [fetchMovies]);
 
   useEffect(() => {
     let id;
     if (retry) {
-      console.log("inside useEffect 2, retry status: "+retry);
+      console.log("inside useEffect 2, retry status: " + retry);
       id = setTimeout(() => {
         fetchMovies();
       }, 2000);
@@ -84,6 +85,7 @@ function App() {
   return (
     <>
       <Container fluid>
+      <FormInput/>
         <Row>
           <Col sm={1} className="colm">
             <Button className="btn" variant="primary" onClick={fetchMovies}>
