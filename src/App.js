@@ -13,28 +13,37 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films/");
+      const response = await fetch("https://fir-project-b7f8c-default-rtdb.firebaseio.com/movies.json");
       if (!response.ok) {
         setRetry(true);
         throw new Error("Something went wrong...");
       }
       setRetry(false);
       const data = await response.json();
+      const movieList=[];
+      for(const key in data){
+        movieList.push({
+          id:key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          date: data[key].date,
+        })
+      }
 
-      const newMovieData = data.results.map((movieData) => {
+      const newMovieData = movieList.map((movieData) => {
         return {
-          id: movieData.episode_id,
+          id: movieData.id,
           title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
+          openingText: movieData.openingText,
+          releaseDate: movieData.date,
         };
       });
       setMovies(newMovieData);
     } catch (error) {
       console.log("inside fetchMovies");
       setError(error.message);
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -79,7 +88,7 @@ function App() {
     );
   }
   if (movies.length > 0) {
-    content = <Movies movies={movies} />;
+    content = <Movies movies={movies} getMovies={fetchMovies}/>;
   }
 
   return (
@@ -87,7 +96,7 @@ function App() {
       <Container fluid>
       <FormInput/>
         <Row>
-          <Col sm={1} className="colm">
+          <Col sm={10} className="colm">
             <Button className="btn" variant="primary" onClick={fetchMovies}>
               Fetch
             </Button>
